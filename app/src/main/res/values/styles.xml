@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="IconToggleButton">
+        <item name="android:textOn">@null</item>
+        <item name="android:textOff">@null</item>
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+    </style>
+    <style name="IconToggleButton.RedCheckbox">
+        <item name="android:background">@drawable/red_checkbox</item>
+    </style>
+    <style name="IconToggleButton.GreenCheckbox">
+        <item name="android:background">@drawable/green_checkbox</item>
+    </style>
+
+    <style name="IconToggleButton.VisibilityButton">
+        <item name="android:background">@drawable/visibility_toggle</item>
+    </style>
+
+    <style name="RecyclerInfoButton" parent="Widget.Material3.Button.IconButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="iconTint">?colorOutline</item>
+        <item name="icon">@drawable/info</item>
+    </style>
+    
+    <style name="FabShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="m2calendar" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorOnPrimary">@color/color_light_blue</item>
+        <item name="colorAccent">@color/color_light_blue</item>
+        <item name="colorPrimaryDark">@color/color_dark_blue</item>
+        <item name="colorControlActivated">@color/color_dark_blue</item>
+        <item name="android:headerBackground">@color/color_dark_blue</item>
+    </style>
+</resources>

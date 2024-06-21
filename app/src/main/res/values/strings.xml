@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Todo Yandex</string>
+    <string name="new_todolist_item">Новое</string>
+    <string name="high_priority_item">‼️ %1$s</string>
+    <string name="medium_priority_item">%1$s</string>
+    <string name="low_priority_item">⬇ %1$s</string>
+    <string name="my_tasks">Мои дела</string>
+    <string name="tasks_done_format">Выполнено — %1$d</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="save">Сохранить</string>
+    <string name="do_until">Сделать до</string>
+    <string name="remove">Удалить</string>
+    <string name="priority">Важность</string>
+    <string name="no">Нет</string>
+    <string name="low_priority_menu_item">Низкий</string>
+    <string name="medium_priority_menu_item">Нет</string>
+    <string name="high_priority_menu_item">!! Высокий</string>
+    <string name="todo_item_text_hint">Что надо сделать...</string>
+</resources>

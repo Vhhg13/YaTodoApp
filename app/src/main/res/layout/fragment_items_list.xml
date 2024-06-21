@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.todolist.TodoListFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/expanded_toolbar_height"
+        android:backgroundTint="?colorSurface">
+
+        <tk.vhhg.todoyandex.ui.todolist.CollapsibleToolbar
+            android:id="@+id/motionLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:minHeight="?actionBarSize"
+            app:layoutDescription="@xml/toolbar_scene"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_end="?actionBarSize" />
+
+            <TextView
+                android:id="@+id/my_tasks_toolbar_text_view"
+                style="@style/LargeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/my_tasks" />
+
+            <TextView
+                android:id="@+id/tasks_done_toolbar_text_view"
+                style="@style/Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?colorOutline"
+                tools:layout_editor_absoluteX="67dp"
+                tools:layout_editor_absoluteY="123dp"
+                tools:text="Выполнено - " />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/visibility_button"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:padding="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:icon="@drawable/visibility_toggle" />
+
+            <!--            <FrameLayout-->
+            <!--                android:id="@+id/visibility_toggle"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:padding="@dimen/icon_toggle_button_padding">-->
+
+            <!--                <ToggleButton-->
+            <!--                    android:id="@+id/actual_visibility_button"-->
+            <!--                    style="@style/IconToggleButton.VisibilityButton"-->
+            <!--                    android:checked="true" />-->
+            <!--            </FrameLayout>-->
+
+        </tk.vhhg.todoyandex.ui.todolist.CollapsibleToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/round_recycler"
+        android:elevation="4dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin_end"
+        android:layout_marginBottom="@dimen/fab_margin_bottom"
+        android:src="@drawable/baseline_add_24"
+        app:layout_anchorGravity="bottom|end"
+        app:shapeAppearanceOverlay="@style/FabShape" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
