@@ -1,0 +1,20 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.TodoYandex" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/color_light_blue</item>
+        <item name="colorPrimaryContainer">@color/color_light_blue</item>
+        <item name="colorOnPrimaryContainer">@color/color_light_white</item>
+        <item name="android:statusBarColor">?colorSurface</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorBackground">?colorSurface</item>
+        <item name="colorError">@color/color_light_red</item>
+        <item name="colorSecondary">@color/color_light_green</item>
+        <item name="colorOutlineVariant">@color/support_light_separator</item>
+        <item name="colorSurface">@color/back_light_primary</item>
+        <item name="colorSurfaceContainerHighest">@color/back_light_secondary</item>
+        <item name="colorOutline">@color/label_light_tertiary</item>
+        <item name="colorOnSurfaceVariant">@color/label_light_disable</item>
+        <item name="support_overlay">@color/support_light_overlay</item>
+        <item name="back_elevated">@color/back_light_elevated</item>
+    </style>
+
+</resources>

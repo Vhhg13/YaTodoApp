@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="m2calendar" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="colorAccent">@color/color_dark_blue</item>
+        <item name="colorOnPrimary">@color/color_dark_blue</item>
+        <item name="android:windowBackground">@color/back_dark_secondary</item>
+        <item name="android:headerBackground">@color/color_dark_blue</item>
+    </style>
+</resources>

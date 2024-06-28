@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+    
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/RecyclerInfoButton"
+        android:padding="@dimen/icon_toggle_button_padding"
+        app:icon="@drawable/baseline_add_24"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Body"
+        android:text="@string/new_todolist_item"/>
+    
+</LinearLayout>

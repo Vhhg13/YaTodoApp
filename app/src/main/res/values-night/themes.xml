@@ -1,0 +1,19 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.TodoYandex" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/color_dark_blue</item>
+        <item name="colorPrimaryContainer">@color/color_dark_blue</item>
+        <item name="colorOnPrimaryContainer">@color/color_dark_white</item>
+        <item name="android:statusBarColor">?colorSurface</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:colorBackground">?colorSurface</item>
+        <item name="colorError">@color/color_dark_red</item>
+        <item name="colorSecondary">@color/color_dark_green</item>
+        <item name="colorOutlineVariant">@color/support_dark_separator</item>
+        <item name="colorSurface">@color/back_dark_primary</item>
+        <item name="colorSurfaceContainerHighest">@color/back_dark_secondary</item>
+        <item name="colorOutline">@color/label_dark_tertiary</item>
+        <item name="colorOnSurfaceVariant">@color/label_dark_disable</item>
+        <item name="support_overlay">@color/support_dark_overlay</item>
+        <item name="back_elevated">@color/back_dark_elevated</item>
+    </style>
+</resources>

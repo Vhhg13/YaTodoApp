@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomColors">
+        <attr name="support_overlay" format="reference|color"/>
+        <attr name="back_elevated" format="reference|color"/>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Transition
+        app:constraintSetEnd="@id/collapsed"
+        app:constraintSetStart="@id/expanded"/>
+
+    <ConstraintSet android:id="@+id/expanded">
+
+        <Constraint
+            android:id="@+id/my_tasks_toolbar_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:scaleX="1"
+            android:scaleY="1"
+            app:layout_constraintBottom_toTopOf="@+id/tasks_done_toolbar_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.25"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.8"
+            app:layout_constraintVertical_chainStyle="packed"/>
+
+        <Constraint
+            android:id="@+id/tasks_done_toolbar_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/my_tasks_toolbar_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/my_tasks_toolbar_text_view" />
+        <Constraint
+            android:id="@+id/visibility_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/tasks_done_toolbar_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tasks_done_toolbar_text_view" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/collapsed">
+
+        <Constraint
+            android:id="@+id/my_tasks_toolbar_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:scaleX="0.625"
+            android:scaleY="0.625"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideline"
+            app:layout_constraintVertical_bias="0.5"/>
+        <Constraint
+            android:id="@id/tasks_done_toolbar_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline" />
+        <Constraint
+            android:id="@+id/visibility_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideline" />
+    </ConstraintSet>
+</MotionScene>
