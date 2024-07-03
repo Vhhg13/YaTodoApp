@@ -1,8 +1,9 @@
 package tk.vhhg.todoyandex.repo
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
+import tk.vhhg.todoyandex.model.Result
 import tk.vhhg.todoyandex.model.TodoItem
+
 
 interface ITodoItemsRepository {
     fun add(item: TodoItem)
@@ -10,7 +11,8 @@ interface ITodoItemsRepository {
     fun generateId(): String
     fun update(updatedItem: TodoItem)
     fun remove(item: TodoItem?)
-    suspend fun findById(id: String?): TodoItem?
+    suspend fun findById(id: String?): Result<TodoItem>
 
     val items: Flow<List<TodoItem>>
+    val errors: Flow<Throwable>
 }

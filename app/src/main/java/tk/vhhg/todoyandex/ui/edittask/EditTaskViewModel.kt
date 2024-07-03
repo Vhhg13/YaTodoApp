@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tk.vhhg.todoyandex.App
+import tk.vhhg.todoyandex.model.Result
 import tk.vhhg.todoyandex.model.TodoItem
 import tk.vhhg.todoyandex.model.TodoItemPriority
 import tk.vhhg.todoyandex.repo.ITodoItemsRepository
@@ -37,16 +38,14 @@ class EditTaskViewModel(
     private val _uiState = MutableStateFlow(EditTaskState())
     val uiState = _uiState.asStateFlow()
     private var item: TodoItem? = null
-    val initialBodyContents: String?
-        get() = item?.body
 
     init {
         viewModelScope.launch {
-            item = repo.findById(taskId)
+            item = (repo.findById(taskId) as? Result.Success)?.value
             mutableListOf<Any>().toMutableList()
         }
         item?.let {
-            _uiState.value = EditTaskState(it.priority, it.deadline?.time)
+            _uiState.value = EditTaskState(it.body, it.priority, it.deadline?.time)
         }
     }
 
@@ -74,13 +73,13 @@ class EditTaskViewModel(
         }
     }
 
-    fun save(body: String) {
+    fun save() {
         if (item == null) {
             repo.add(
                 TodoItem(
                     id = repo.generateId(),
                     isDone = false,
-                    body = body,
+                    body = uiState.value.body,
                     priority = uiState.value.priority,
                     creationDate = Date(),
                     deadline = uiState.value.deadline?.let { Date(it) },
@@ -90,12 +89,18 @@ class EditTaskViewModel(
         } else {
             repo.update(
                 item!!.copy(
-                    body = body,
+                    body = uiState.value.body,
                     priority = uiState.value.priority,
                     deadline = uiState.value.deadline?.let { Date(it) },
                     lastModificationDate = Date()
                 )
             )
+        }
+    }
+
+    fun changeBody(body: String){
+        _uiState.update { state ->
+            state.copy(body = body)
         }
     }
 

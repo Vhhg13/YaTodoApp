@@ -17,4 +17,6 @@
     <string name="medium_priority_menu_item">Нет</string>
     <string name="high_priority_menu_item">!! Высокий</string>
     <string name="todo_item_text_hint">Что надо сделать...</string>
+    <string name="select_date">ГОТОВО</string>
+    <string name="dismiss">ОТМЕНА</string>
 </resources>
