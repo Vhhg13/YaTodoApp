@@ -9,6 +9,7 @@ import androidx.fragment.app.DialogFragment
 import tk.vhhg.todoyandex.R
 import java.util.Calendar
 
+@Deprecated("Not needed when using Compose")
 class DatePickerFragment(private val onDateSetListener: OnDateSetListener) : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

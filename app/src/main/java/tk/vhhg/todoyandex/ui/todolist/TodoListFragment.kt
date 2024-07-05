@@ -11,14 +11,19 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import kotlinx.coroutines.flow.StateFlow
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import tk.vhhg.todoyandex.App
 import tk.vhhg.todoyandex.R
 import tk.vhhg.todoyandex.databinding.FragmentItemsListBinding
+import tk.vhhg.todoyandex.model.Result
 import tk.vhhg.todoyandex.model.TodoItem
-import tk.vhhg.todoyandex.repo.TodoItemsFakeRepository
 
+/**
+ * UI controller for the [TodoItem]s list
+ */
 class TodoListFragment : Fragment() {
     private var _binding: FragmentItemsListBinding? = null
     private val binding: FragmentItemsListBinding get() = _binding!!
@@ -37,30 +42,37 @@ class TodoListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val navController = findNavController()
         val adapter = TodoListAdapter(
-            onToggle = { todoItemId ->
-                viewModel.toggle(todoItemId)
+            onToggle = { todoItem ->
+                viewModel.toggle(todoItem)
             },
-            onItemClick = { todoItemId ->
+            onItemClick = { todoItem: TodoItem? ->
                 val directions =
-                    TodoListFragmentDirections.actionItemsListFragmentToEditTaskFragment(todoItemId)
+                    TodoListFragmentDirections.actionItemsListFragmentToEditTaskFragment(todoItem)
                 navController.navigate(directions)
             }
         )
         binding.recycler.adapter = adapter
-        observeWithLifecycle(viewModel.items) { list ->
-            adapter.submitList(list)
-        }
-        observeWithLifecycle(viewModel.tasksDone) { amount ->
-            binding.tasksDoneToolbarTextView.text = getString(R.string.tasks_done_format, amount)
-        }
-        observeWithLifecycle(viewModel.areDoneTasksVisible) { areVisible ->
-            val iconResource = if (areVisible) {
-                R.drawable.visibility_24px
-            } else {
+        observeWithLifecycle(viewModel.uiState) { uiState ->
+            binding.swipeRefreshLayout.isRefreshing = uiState.isLoading
+            adapter.submitList(uiState.filteredList)
+            binding.tasksDoneToolbarTextView.text =
+                getString(R.string.tasks_done_format, uiState.tasksDone)
+            val iconResource = if (uiState.areDoneTasksVisible) {
                 R.drawable.visibility_off_24px
+            } else {
+                R.drawable.visibility_24px
             }
             binding.visibilityButton.icon =
                 AppCompatResources.getDrawable(requireContext(), iconResource)
+        }
+        observeWithLifecycle(viewModel.errors) { _: Result<Unit> ->
+            Snackbar.make(
+                binding.root,
+                R.string.error_happened,
+                Snackbar.LENGTH_LONG
+            ).setAction(R.string.refresh){
+                viewModel.refresh()
+            }.show()
         }
         binding.visibilityButton.setOnClickListener {
             viewModel.toggleDoneTasksVisibility()
@@ -70,6 +82,9 @@ class TodoListFragment : Fragment() {
                 TodoListFragmentDirections.actionItemsListFragmentToEditTaskFragment(null)
             navController.navigate(directions)
         }
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.refresh()
+        }
     }
 
     override fun onDestroyView() {
@@ -77,7 +92,7 @@ class TodoListFragment : Fragment() {
         _binding = null
     }
 
-    private fun <T> observeWithLifecycle(flow: StateFlow<T>, block: (T) -> Unit) {
+    private fun <T> observeWithLifecycle(flow: Flow<T>, block: (T) -> Unit) {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 flow.collect(block)

@@ -19,4 +19,6 @@
     <string name="todo_item_text_hint">Что надо сделать...</string>
     <string name="select_date">ГОТОВО</string>
     <string name="dismiss">ОТМЕНА</string>
+    <string name="error_happened">Произошла ошибка. Обновите список</string>
+    <string name="refresh">Обновить</string>
 </resources>

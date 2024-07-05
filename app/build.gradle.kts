@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("androidx.navigation.safeargs.kotlin")
     alias(libs.plugins.compose.compiler)
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 android {
@@ -42,21 +43,36 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.activity.ktx)
+    // Ktor:
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    // Ktor android logging:
+    implementation(libs.ktor.client.logging)
+    implementation(libs.slf4j.android)
+    // Ktor ContentNegotiation
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.kotlinx.serialization.json)
 
+    // WorkManager
+    implementation(libs.androidx.work.runtime.ktx)
+
+
+
+    // Compose
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
     implementation(composeBom)
-
     implementation(libs.androidx.material2)
     implementation(libs.androidx.material3)
-
-
     implementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.tooling)
 
+    // Swipe to refresh
+    implementation(libs.swiperefreshlayout)
 
-
+    // Other Android
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

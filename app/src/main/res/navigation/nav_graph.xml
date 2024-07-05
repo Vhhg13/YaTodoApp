@@ -20,8 +20,8 @@
         android:label="fragment_edit_task"
         tools:layout="@layout/fragment_edit_task" >
         <argument
-            android:name="taskId"
-            app:argType="string"
+            android:name="todoItem"
+            app:argType="tk.vhhg.todoyandex.model.TodoItem"
             app:nullable="true" />
     </fragment>
 </navigation>

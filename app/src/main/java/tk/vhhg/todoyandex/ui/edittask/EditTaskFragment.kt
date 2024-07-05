@@ -15,6 +15,9 @@ import tk.vhhg.todoyandex.ui.edittask.composables.EditTaskScreen
 import tk.vhhg.todoyandex.ui.theme.AppTheme
 import java.util.Date
 
+/**
+ * UI controller for the task editing screen
+ */
 class EditTaskFragment : Fragment() {
 
     private val viewModel: EditTaskViewModel by viewModels { EditTaskViewModel.Factory }
@@ -27,7 +30,6 @@ class EditTaskFragment : Fragment() {
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-
             setContent {
                 AppTheme {
                     val uiState by viewModel.uiState.collectAsState()
@@ -35,7 +37,7 @@ class EditTaskFragment : Fragment() {
                         body = uiState.body,
                         priority = uiState.priority,
                         deadline = uiState.deadline?.let { Date(it) },
-                        deleteButtonEnabled = viewModel.taskId != null,
+                        deleteButtonEnabled = viewModel.item != null,
                         onBodyChange = { viewModel.changeBody(it) },
                         onPriorityChange = { viewModel.changePriority(it) },
                         onDeadlineSwitchToggle = { viewModel.toggleDeadline(it) },

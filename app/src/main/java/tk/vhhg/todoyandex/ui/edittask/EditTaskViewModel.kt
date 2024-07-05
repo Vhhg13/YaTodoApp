@@ -5,19 +5,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.createSavedStateHandle
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import tk.vhhg.todoyandex.App
-import tk.vhhg.todoyandex.model.Result
 import tk.vhhg.todoyandex.model.TodoItem
 import tk.vhhg.todoyandex.model.TodoItemPriority
 import tk.vhhg.todoyandex.repo.ITodoItemsRepository
 import java.util.Date
 
+/**
+ * ViewModel for the [task editing screen][EditTaskFragment].
+ * Holds the current state for the screen and handles UI logic.
+ */
 class EditTaskViewModel(
     private val repo: ITodoItemsRepository, savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -34,16 +35,11 @@ class EditTaskViewModel(
         }
     }
 
-    val taskId: String? = savedStateHandle["taskId"]
+    val item: TodoItem? = savedStateHandle["todoItem"]
     private val _uiState = MutableStateFlow(EditTaskState())
     val uiState = _uiState.asStateFlow()
-    private var item: TodoItem? = null
 
     init {
-        viewModelScope.launch {
-            item = (repo.findById(taskId) as? Result.Success)?.value
-            mutableListOf<Any>().toMutableList()
-        }
         item?.let {
             _uiState.value = EditTaskState(it.body, it.priority, it.deadline?.time)
         }
@@ -62,40 +58,36 @@ class EditTaskViewModel(
     }
 
     fun toggleDeadline(isChecked: Boolean) {
+        val newDeadline = if (isChecked) {
+            item?.deadline?.time ?: Date().time
+        } else {
+            null
+        }
         _uiState.update { state ->
-            state.copy(
-                deadline = if (isChecked) {
-                    item?.deadline?.time ?: Date().time
-                } else {
-                    null
-                }
-            )
+            state.copy(deadline = newDeadline)
         }
     }
 
     fun save() {
-        if (item == null) {
-            repo.add(
-                TodoItem(
-                    id = repo.generateId(),
-                    isDone = false,
-                    body = uiState.value.body,
-                    priority = uiState.value.priority,
-                    creationDate = Date(),
-                    deadline = uiState.value.deadline?.let { Date(it) },
-                    lastModificationDate = Date()
-                )
-            )
-        } else {
-            repo.update(
-                item!!.copy(
-                    body = uiState.value.body,
-                    priority = uiState.value.priority,
-                    deadline = uiState.value.deadline?.let { Date(it) },
-                    lastModificationDate = Date()
-                )
-            )
+        if (item != null) {
+            repo.update(item.copy(
+                body = uiState.value.body,
+                priority = uiState.value.priority,
+                deadline = uiState.value.deadline?.let { Date(it) },
+                lastModificationDate = Date()
+            ))
+            return
         }
+
+        repo.add(TodoItem(
+            id = repo.generateId(),
+            isDone = false,
+            body = uiState.value.body,
+            priority = uiState.value.priority,
+            creationDate = Date(),
+            deadline = uiState.value.deadline?.let { Date(it) },
+            lastModificationDate = Date()
+        ))
     }
 
     fun changeBody(body: String){
