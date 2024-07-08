@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ToggleButton
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.DiffUtil
@@ -15,8 +16,12 @@ import tk.vhhg.todoyandex.databinding.TodolistItemBinding
 import tk.vhhg.todoyandex.model.TodoItemPriority
 import tk.vhhg.todoyandex.model.TodoItem
 
-
-class TodoListAdapter(private val onToggle: (String) -> Unit, private val onItemClick: (String?) -> Unit) :
+/**
+ * Adapter used to display [TodoItem]s in a list.
+ *
+ * I'm too scared to edit any code here, RecyclerView just works :,)
+ */
+class TodoListAdapter(private val onToggle: (TodoItem) -> Unit, private val onItemClick: (TodoItem?) -> Unit) :
     ListAdapter<TodoItem, ViewHolder>(DIFF) {
 
     companion object DIFF : DiffUtil.ItemCallback<TodoItem>() {
@@ -35,30 +40,30 @@ class TodoListAdapter(private val onToggle: (String) -> Unit, private val onItem
 
         fun onBind(
             item: TodoItem,
-            onToggle: (String) -> Unit,
-            onItemClick: (String?) -> Unit
+            onToggle: (TodoItem) -> Unit,
+            onItemClick: (TodoItem?) -> Unit
         ) {
             binding.apply {
                 bindBody(item)
                 bindSubhead(item)
                 bindToggleButton(item, onToggle)
 
-                checkbox.setOnClickListener { onToggle(item.id) }
-                root.setOnClickListener { onItemClick(item.id) }
-                info.setOnClickListener { onItemClick(item.id) }
+                checkbox.setOnClickListener { onToggle(item) }
+                root.setOnClickListener { onItemClick(item) }
+                info.setOnClickListener { onItemClick(item) }
             }
         }
 
         private fun bindToggleButton(
             item: TodoItem,
-            onToggle: (String) -> Unit
+            onToggle: (TodoItem) -> Unit
         ) {
             binding.apply {
                 val backgroundResource = if (item.priority == TodoItemPriority.HIGH) R.drawable.red_checkbox else R.drawable.green_checkbox
                 val toggleButton = checkbox.getChildAt(0) as ToggleButton
                 toggleButton.setBackgroundResource(backgroundResource)
                 toggleButton.isChecked = item.isDone
-                toggleButton.setOnClickListener { onToggle(item.id) }
+                toggleButton.setOnClickListener { onToggle(item) }
             }
         }
 
@@ -96,8 +101,11 @@ class TodoListAdapter(private val onToggle: (String) -> Unit, private val onItem
 
     }
 
-    class AddItemViewHolder(view: View, onItemClick: (String?) -> Unit) : ViewHolder(view){
-        init { view.setOnClickListener { onItemClick(null) } }
+    class AddItemViewHolder(view: View, onItemClick: (TodoItem?) -> Unit) : ViewHolder(view){
+        init {
+            view.setOnClickListener { onItemClick(null) }
+            view.findViewById<Button>(R.id.plus_button).setOnClickListener{ onItemClick(null) }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

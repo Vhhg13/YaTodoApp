@@ -4,15 +4,18 @@ import kotlinx.coroutines.flow.Flow
 import tk.vhhg.todoyandex.model.Result
 import tk.vhhg.todoyandex.model.TodoItem
 
-
+/**
+ * A single place for storing and retrieving [TodoItem]s
+ */
 interface ITodoItemsRepository {
     fun add(item: TodoItem)
-    fun toggle(itemId: String)
+    fun toggle(item: TodoItem)
     fun generateId(): String
-    fun update(updatedItem: TodoItem)
+    fun update(item: TodoItem)
     fun remove(item: TodoItem?)
-    suspend fun findById(id: String?): Result<TodoItem>
+    fun refresh()
+    suspend fun findById(id: String?): TodoItem?
 
     val items: Flow<List<TodoItem>>
-    val errors: Flow<Throwable>
+    val errors: Flow<Result<Unit>>
 }

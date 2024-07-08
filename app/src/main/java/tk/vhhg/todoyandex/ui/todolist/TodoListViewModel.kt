@@ -7,16 +7,25 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tk.vhhg.todoyandex.App
+import tk.vhhg.todoyandex.model.Result
 import tk.vhhg.todoyandex.model.TodoItem
 import tk.vhhg.todoyandex.repo.ITodoItemsRepository
 
+/**
+ * ViewModel for the [todo list screen][TodoListFragment].
+ * Holds the current state for the screen and handles UI logic.
+ */
 class TodoListViewModel(
     private val repo: ITodoItemsRepository,
     private val savedStateHandle: SavedStateHandle
@@ -35,47 +44,41 @@ class TodoListViewModel(
         }
     }
 
-    private val _areDoneTasksVisible = MutableStateFlow(true)
-    val areDoneTasksVisible = _areDoneTasksVisible.asStateFlow()
+    private val _uiState = MutableStateFlow(TodoListUiState(listOf()))
+    val uiState = _uiState.asStateFlow()
 
-    private val _items = MutableStateFlow(listOf<TodoItem>())
-    val items: StateFlow<List<TodoItem>> = _items.asStateFlow()
-
-    private val _tasksDone = MutableStateFlow(0)
-    val tasksDone: StateFlow<Int> = _tasksDone.asStateFlow()
+    val errors = repo.errors
 
     init {
-        collectItems()
-        collectDoneTasksCount()
-    }
-
-    private fun collectItems() {
-        viewModelScope.launch {
-            repo.items
-                .combine(_areDoneTasksVisible) { todoItemList, doneTasksVisibility ->
-                    todoItemList.filter { !it.isDone or doneTasksVisibility }
-                }
-                .collect { todoList ->
-                    _items.value = todoList
-                }
+        collectWithViewModelScope(repo.items){ list ->
+            _uiState.update {
+                it.copy(list = list, isLoading = false)
+            }
         }
-    }
-
-    private fun collectDoneTasksCount() {
-        viewModelScope.launch {
-            repo.items.collect { todoList ->
-                _tasksDone.value = todoList.count { it.isDone }
+        collectWithViewModelScope(repo.errors){ error ->
+            _uiState.update {
+                it.copy(isLoading = false)
             }
         }
     }
 
     fun toggleDoneTasksVisibility() {
-        _areDoneTasksVisible.update { !it }
+        val areDoneTasksVisibleNow = _uiState.value.areDoneTasksVisible
+        _uiState.update {
+            it.copy(areDoneTasksVisible = !areDoneTasksVisibleNow)
+        }
     }
 
-    fun toggle(todoItemId: String) {
-        repo.toggle(todoItemId)
+    fun toggle(todoItem: TodoItem) {
+        repo.toggle(todoItem)
     }
-
-
+    fun refresh() {
+        _uiState.update { it.copy(isLoading = true) }
+        repo.refresh()
+    }
+    private fun <T> collectWithViewModelScope(flow: Flow<T>, block: (T) -> Unit){
+        viewModelScope.launch {
+            flow.collect(block)
+        }
+    }
 }
