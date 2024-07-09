@@ -1,7 +1,6 @@
 package tk.vhhg.todoyandex.repo
 
 import android.util.Log
-import io.ktor.util.logging.KtorSimpleLogger
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,17 +14,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import tk.vhhg.todoyandex.datasource.ITodoRemoteDataSource
 import tk.vhhg.todoyandex.datasource.TodoInRamDataSource
+import tk.vhhg.todoyandex.di.Connectivity
+import tk.vhhg.todoyandex.di.DeviceId
+import tk.vhhg.todoyandex.di.TodoAppScope
 import tk.vhhg.todoyandex.model.Result
 import tk.vhhg.todoyandex.model.TodoItem
+import javax.inject.Inject
 
 /**
  * An implementation of [ITodoItemsRepository]
  */
-class TodoItemsRepository(
+@TodoAppScope
+class TodoItemsRepository @Inject constructor(
     private val remoteDataSource: ITodoRemoteDataSource,
     private val inRamDataSource: TodoInRamDataSource,
-    private val deviceId: String,
-    private val connectivity: StateFlow<Boolean>
+    @DeviceId private val deviceId: String,
+    @Connectivity private val connectivity: StateFlow<Boolean>
 ) : ITodoItemsRepository {
 
     private val handler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->

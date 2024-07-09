@@ -3,13 +3,16 @@ package tk.vhhg.todoyandex.datasource
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import tk.vhhg.todoyandex.di.TodoAppScope
 import tk.vhhg.todoyandex.model.TodoItem
 import java.util.UUID
+import javax.inject.Inject
 
 /**
  * Temporary class for storing data locally without a database
  */
-class TodoInRamDataSource {
+@TodoAppScope
+class TodoInRamDataSource @Inject constructor() {
     private var data = mutableListOf<TodoItem>()
     private val _items = MutableSharedFlow<List<TodoItem>>(replay = 1)
 

@@ -1,24 +1,19 @@
 package tk.vhhg.todoyandex.ui.todolist
 
+import android.os.Bundle
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
+import androidx.savedstate.SavedStateRegistryOwner
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tk.vhhg.todoyandex.App
-import tk.vhhg.todoyandex.model.Result
 import tk.vhhg.todoyandex.model.TodoItem
 import tk.vhhg.todoyandex.repo.ITodoItemsRepository
 
@@ -30,19 +25,6 @@ class TodoListViewModel(
     private val repo: ITodoItemsRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                val application = checkNotNull(extras[APPLICATION_KEY])
-                val savedStateHandle = extras.createSavedStateHandle()
-                return TodoListViewModel((application as App).repo, savedStateHandle) as T
-            }
-        }
-    }
 
     private val _uiState = MutableStateFlow(TodoListUiState(listOf()))
     val uiState = _uiState.asStateFlow()
@@ -50,12 +32,12 @@ class TodoListViewModel(
     val errors = repo.errors
 
     init {
-        collectWithViewModelScope(repo.items){ list ->
+        collectWithViewModelScope(repo.items) { list ->
             _uiState.update {
                 it.copy(list = list, isLoading = false)
             }
         }
-        collectWithViewModelScope(repo.errors){ error ->
+        collectWithViewModelScope(repo.errors) { error ->
             _uiState.update {
                 it.copy(isLoading = false)
             }
@@ -72,13 +54,38 @@ class TodoListViewModel(
     fun toggle(todoItem: TodoItem) {
         repo.toggle(todoItem)
     }
+
     fun refresh() {
         _uiState.update { it.copy(isLoading = true) }
         repo.refresh()
     }
-    private fun <T> collectWithViewModelScope(flow: Flow<T>, block: (T) -> Unit){
+
+    private fun <T> collectWithViewModelScope(flow: Flow<T>, block: (T) -> Unit) {
         viewModelScope.launch {
             flow.collect(block)
+        }
+    }
+
+    class Factory @AssistedInject constructor(
+        private val repo: ITodoItemsRepository,
+        @Assisted("owner") private val owner: SavedStateRegistryOwner,
+        @Assisted("args") private val defaultArgs: Bundle?
+    ) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(
+            key: String,
+            modelClass: Class<T>,
+            handle: SavedStateHandle
+        ): T {
+            return TodoListViewModel(repo, handle) as T
+        }
+
+        @AssistedFactory
+        interface AFactory {
+            fun create(
+                @Assisted("owner") owner: SavedStateRegistryOwner,
+                @Assisted("args") defaultArgs: Bundle? = null
+            ): Factory
         }
     }
 }

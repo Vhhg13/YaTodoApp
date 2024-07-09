@@ -15,19 +15,23 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.delay
-import tk.vhhg.todoyandex.App
+import tk.vhhg.todoyandex.di.Constants
+import tk.vhhg.todoyandex.di.LastRevisionPreferences
+import tk.vhhg.todoyandex.di.TodoAppScope
 import tk.vhhg.todoyandex.model.ElementDTO
 import tk.vhhg.todoyandex.model.ListDTO
 import tk.vhhg.todoyandex.model.Result
 import tk.vhhg.todoyandex.model.TodoItem
 import java.util.UUID
+import javax.inject.Inject
 
 /**
  * Implementation of [ITodoRemoteDataSource]
  */
-class TodoRemoteDataSource(
+@TodoAppScope
+class TodoRemoteDataSource @Inject constructor(
     private val httpClient: HttpClient,
-    private val lastRevision: SharedPreferences
+    @LastRevisionPreferences private val lastRevision: SharedPreferences
 ) : ITodoRemoteDataSource {
 
     companion object {
@@ -178,12 +182,12 @@ class TodoRemoteDataSource(
     }
 
     private fun SharedPreferences.getLastRevision(): Int {
-        return getInt(App.KEY_LAST_REVISION, 0)
+        return getInt(Constants.SP_KEY_LAST_REVISION, 0)
     }
 
     private fun SharedPreferences.setLastRevision(value: Int?) {
         edit {
-            putInt(App.KEY_LAST_REVISION, value ?: getLastRevision())
+            putInt(Constants.SP_KEY_LAST_REVISION, value ?: getLastRevision())
         }
     }
 

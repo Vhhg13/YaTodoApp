@@ -1,5 +1,6 @@
 package tk.vhhg.todoyandex.ui.edittask
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,16 +12,32 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import tk.vhhg.todoyandex.App
 import tk.vhhg.todoyandex.ui.edittask.composables.EditTaskScreen
 import tk.vhhg.todoyandex.ui.theme.AppTheme
 import java.util.Date
+import javax.inject.Inject
 
 /**
  * UI controller for the task editing screen
  */
 class EditTaskFragment : Fragment() {
 
-    private val viewModel: EditTaskViewModel by viewModels { EditTaskViewModel.Factory }
+    @Inject
+    lateinit var viewModelFactory: EditTaskViewModel.Factory.AFactory
+
+    private val args by navArgs<EditTaskFragmentArgs>()
+
+    private val viewModel: EditTaskViewModel by viewModels {
+        viewModelFactory.create(args.todoItem, this)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as App).appComponent.getEditTaskFragmentComponent()
+            .inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
