@@ -24,7 +24,7 @@ class RefreshListWorker(
     Worker(appContext, workerParams) {
 
     override fun doWork(): Result {
-        repo.refresh()
+        repo.sync()
         return Result.success()
     }
 
@@ -42,7 +42,7 @@ class RefreshListWorker(
                 .getInstance(app)
                 .enqueueUniquePeriodicWork(
                     Constants.REFRESH_LIST_UNIQUE_WORK_NAME,
-                    ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+                    ExistingPeriodicWorkPolicy.KEEP,
                     refreshListRequest
                 )
         }

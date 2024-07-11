@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Network
 import androidx.core.content.edit
+import androidx.room.Room
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
@@ -14,6 +15,7 @@ import dagger.Provides
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -28,8 +30,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
-import tk.vhhg.todoyandex.datasource.ITodoRemoteDataSource
-import tk.vhhg.todoyandex.datasource.TodoRemoteDataSource
+import tk.vhhg.todoyandex.datasource.local.db.AppDatabase
+import tk.vhhg.todoyandex.datasource.local.ITodoLocalDataSource
+import tk.vhhg.todoyandex.datasource.local.db.TodoItemDao
+import tk.vhhg.todoyandex.datasource.local.db.TodoLocalDataSource
+import tk.vhhg.todoyandex.datasource.local.preferences.IRevisionLocalDataSource
+import tk.vhhg.todoyandex.datasource.local.preferences.RevisionLocalDataSource
+import tk.vhhg.todoyandex.datasource.remote.ITodoRemoteDataSource
+import tk.vhhg.todoyandex.datasource.remote.TodoRemoteDataSource
 import tk.vhhg.todoyandex.repo.ITodoItemsRepository
 import tk.vhhg.todoyandex.repo.TodoItemsRepository
 import tk.vhhg.todoyandex.util.RefreshListWorker
@@ -46,6 +54,7 @@ interface AppModule {
                 configureDefaultRequest()
                 install(Logging) { level = LogLevel.ALL }
                 configureContentNegotiation()
+                configureRetries()
             }
         }
 
@@ -95,11 +104,26 @@ interface AppModule {
                     workerClassName: String,
                     workerParameters: WorkerParameters
                 ): ListenableWorker? {
-                    if(workerClassName == RefreshListWorker::class.java.name)
+                    if (workerClassName == RefreshListWorker::class.java.name)
                         return RefreshListWorker(appContext, workerParameters, repo)
                     return null
                 }
             }
+        }
+
+        @Provides
+        @TodoAppScope
+        fun provideDatabase(context: Context): AppDatabase {
+            return Room.databaseBuilder(
+                context,
+                AppDatabase::class.java, "TodoItemsDatabase"
+            ).build()
+        }
+
+        @Provides
+        @TodoAppScope
+        fun provideTodoItemsDao(db: AppDatabase): TodoItemDao {
+            return db.todoDao()
         }
     }
 
@@ -111,6 +135,14 @@ interface AppModule {
     @Binds
     @TodoAppScope
     fun bindTodoItemsRepository(repo: TodoItemsRepository): ITodoItemsRepository
+
+    @Binds
+    @TodoAppScope
+    fun bindTodoLocalDataSource(ds: TodoLocalDataSource): ITodoLocalDataSource
+
+    @Binds
+    @TodoAppScope
+    fun bindRevisionLocalDataSource(ds: RevisionLocalDataSource): IRevisionLocalDataSource
 }
 
 private fun HttpClientConfig<*>.configureDefaultRequest() {
@@ -129,7 +161,16 @@ private fun HttpClientConfig<*>.configureDefaultRequest() {
 private fun HttpClientConfig<*>.configureContentNegotiation() {
     install(ContentNegotiation) {
         json(Json {
-            explicitNulls = false; encodeDefaults = true
+            explicitNulls = false
+            encodeDefaults = true
+            ignoreUnknownKeys = true // TODO: Добавить поддержку нового поля `files`
         })
+    }
+}
+
+private fun HttpClientConfig<*>.configureRetries() {
+    install(HttpRequestRetry) {
+        retryOnServerErrors(maxRetries = 5)
+        exponentialDelay(base = 1.0, maxDelayMs = 5000)
     }
 }

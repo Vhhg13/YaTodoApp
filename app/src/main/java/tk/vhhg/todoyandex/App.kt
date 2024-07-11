@@ -13,7 +13,7 @@ class App : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        RefreshListWorker.initialize(this)
+        //RefreshListWorker.initialize(this)
     }
 
     override val workManagerConfiguration: Configuration

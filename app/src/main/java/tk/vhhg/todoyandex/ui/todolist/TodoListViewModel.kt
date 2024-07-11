@@ -34,7 +34,7 @@ class TodoListViewModel(
     init {
         collectWithViewModelScope(repo.items) { list ->
             _uiState.update {
-                it.copy(list = list, isLoading = false)
+                it.copy(list = list)
             }
         }
         collectWithViewModelScope(repo.errors) { error ->
@@ -57,7 +57,7 @@ class TodoListViewModel(
 
     fun refresh() {
         _uiState.update { it.copy(isLoading = true) }
-        repo.refresh()
+        repo.sync()
     }
 
     private fun <T> collectWithViewModelScope(flow: Flow<T>, block: (T) -> Unit) {

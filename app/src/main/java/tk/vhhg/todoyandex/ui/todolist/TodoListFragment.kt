@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.work.ListenableWorker.Result.Success
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -75,14 +76,15 @@ class TodoListFragment : Fragment() {
             binding.visibilityButton.icon =
                 AppCompatResources.getDrawable(requireContext(), iconResource)
         }
-        observeWithLifecycle(viewModel.errors) { _: Result<Unit> ->
-            Snackbar.make(
-                binding.root,
-                R.string.error_happened,
-                Snackbar.LENGTH_LONG
-            ).setAction(R.string.refresh) {
-                viewModel.refresh()
-            }.show()
+        observeWithLifecycle(viewModel.errors) { r: Result<Unit> ->
+            if(r !is Result.Success)
+                Snackbar.make(
+                    binding.root,
+                    R.string.error_happened,
+                    Snackbar.LENGTH_LONG
+                ).setAction(R.string.refresh) {
+                    viewModel.refresh()
+                }.show()
         }
         binding.visibilityButton.setOnClickListener {
             viewModel.toggleDoneTasksVisibility()

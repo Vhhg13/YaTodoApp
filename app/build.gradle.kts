@@ -44,6 +44,15 @@ android {
 }
 
 dependencies {
+    // Room
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+
+
+
     // Dagger:
 
     implementation(libs.dagger)
