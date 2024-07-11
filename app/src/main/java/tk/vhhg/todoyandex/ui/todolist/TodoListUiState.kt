@@ -8,7 +8,7 @@ import tk.vhhg.todoyandex.model.TodoItem
 data class TodoListUiState(
     val list: List<TodoItem>,
     val areDoneTasksVisible: Boolean = true,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = false
 ) {
     val tasksDone: Int get() = list.count { it.isDone }
     val filteredList: List<TodoItem> = list.filter { !it.isDone or areDoneTasksVisible }
