@@ -36,6 +36,7 @@ class RefreshListWorker(
                 .build()
             val refreshListRequest =
                 PeriodicWorkRequestBuilder<RefreshListWorker>(REPEAT_INTERVAL, TimeUnit.HOURS)
+                    .setInitialDelay(REPEAT_INTERVAL, TimeUnit.HOURS)
                     .setConstraints(workerConstraints)
                     .build()
             WorkManager
