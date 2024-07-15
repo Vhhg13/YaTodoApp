@@ -13,7 +13,7 @@ interface ITodoItemsRepository {
     fun generateId(): String
     fun update(item: TodoItem)
     fun remove(item: TodoItem?)
-    fun refresh()
+    fun sync()
     suspend fun findById(id: String?): TodoItem?
 
     val items: Flow<List<TodoItem>>

@@ -4,6 +4,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     alias(libs.plugins.compose.compiler)
     kotlin("plugin.serialization") version "2.0.0"
+    id("kotlin-kapt")
 }
 
 android {
@@ -43,6 +44,20 @@ android {
 }
 
 dependencies {
+    // Room
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+
+
+
+    // Dagger:
+
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
+
     // Ktor:
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)

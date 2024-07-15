@@ -1,5 +1,6 @@
 package tk.vhhg.todoyandex.ui.todolist
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,15 +12,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.work.ListenableWorker.Result.Success
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import tk.vhhg.todoyandex.App
 import tk.vhhg.todoyandex.R
 import tk.vhhg.todoyandex.databinding.FragmentItemsListBinding
 import tk.vhhg.todoyandex.model.Result
 import tk.vhhg.todoyandex.model.TodoItem
+import javax.inject.Inject
 
 /**
  * UI controller for the [TodoItem]s list
@@ -28,7 +30,16 @@ class TodoListFragment : Fragment() {
     private var _binding: FragmentItemsListBinding? = null
     private val binding: FragmentItemsListBinding get() = _binding!!
 
-    private val viewModel: TodoListViewModel by viewModels { TodoListViewModel.Factory }
+    @Inject
+    lateinit var viewModelFactory: TodoListViewModel.Factory.AFactory
+
+    private val viewModel: TodoListViewModel by viewModels { viewModelFactory.create(this) }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as App).appComponent.getTodoListFragmentComponent()
+            .inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,14 +76,15 @@ class TodoListFragment : Fragment() {
             binding.visibilityButton.icon =
                 AppCompatResources.getDrawable(requireContext(), iconResource)
         }
-        observeWithLifecycle(viewModel.errors) { _: Result<Unit> ->
-            Snackbar.make(
-                binding.root,
-                R.string.error_happened,
-                Snackbar.LENGTH_LONG
-            ).setAction(R.string.refresh){
-                viewModel.refresh()
-            }.show()
+        observeWithLifecycle(viewModel.errors) { r: Result<Unit> ->
+            if(r !is Result.Success)
+                Snackbar.make(
+                    binding.root,
+                    R.string.error_happened,
+                    Snackbar.LENGTH_LONG
+                ).setAction(R.string.refresh) {
+                    viewModel.refresh()
+                }.show()
         }
         binding.visibilityButton.setOnClickListener {
             viewModel.toggleDoneTasksVisibility()

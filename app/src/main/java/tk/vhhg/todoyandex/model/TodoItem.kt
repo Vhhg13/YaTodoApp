@@ -2,8 +2,12 @@ package tk.vhhg.todoyandex.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import tk.vhhg.todoyandex.util.DateConverter
 import tk.vhhg.todoyandex.util.DateSerializer
 import java.util.Date
 
@@ -23,9 +27,10 @@ import java.util.Date
  * }
  * ```
  */
+@Entity(tableName = "TodoItems")
 @Serializable
 data class TodoItem(
-    @SerialName("id")
+    @SerialName("id") @PrimaryKey
     val id: String,
     @SerialName("done")
     val isDone: Boolean,
@@ -33,16 +38,18 @@ data class TodoItem(
     val body: String,
     @SerialName("importance")
     val priority: TodoItemPriority = TodoItemPriority.MEDIUM,
-    @SerialName("created_at") @Serializable(with = DateSerializer::class)
+    @SerialName("created_at") @Serializable(with = DateSerializer::class) @TypeConverters(DateConverter::class)
     val creationDate: Date,
-    @SerialName("deadline") @Serializable(with = DateSerializer::class)
+    @SerialName("deadline") @Serializable(with = DateSerializer::class) @TypeConverters(DateConverter::class)
     val deadline: Date? = null,
-    @SerialName("changed_at") @Serializable(with = DateSerializer::class)
+    @SerialName("changed_at") @Serializable(with = DateSerializer::class) @TypeConverters(DateConverter::class)
     val lastModificationDate: Date? = null,
     @SerialName("last_updated_by")
-    var lastUpdatedBy: String? = null,
+    val lastUpdatedBy: String? = null,
     @SerialName("color")
-    var color: String? = null
+    val color: String? = null,
+//    @SerialName("files")
+//    val files: List<String>? = null
 ): Parcelable{
     fun updatedBy(uuid: String) = copy(lastUpdatedBy = uuid, lastModificationDate = Date())
     constructor(parcel: Parcel) : this(
@@ -54,7 +61,8 @@ data class TodoItem(
         parcel.readLong().let { if(it == 0L) null else Date(it) },
         parcel.readLong().let { if(it == 0L) null else Date(it) },
         parcel.readString(),
-        parcel.readString()
+        parcel.readString(),
+//        mutableListOf<String>().also { parcel.readStringList(it) }
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -67,6 +75,7 @@ data class TodoItem(
         parcel.writeLong(lastModificationDate?.time ?: 0)
         parcel.writeString(lastUpdatedBy)
         parcel.writeString(color)
+//        parcel.writeStringList(files)
     }
 
     override fun describeContents() = 0
