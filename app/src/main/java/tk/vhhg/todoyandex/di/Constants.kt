@@ -1,6 +1,7 @@
 package tk.vhhg.todoyandex.di
 
 object Constants {
+    const val THEME_PREFERENCE = "THEME_PREFERENCE"
     const val BASE_URL = "https://hive.mrdekk.ru/todo/"
     const val SHARED_PREFERENCES_KEY = "data"
     const val SP_KEY_LAST_REVISION = "lastRevision"

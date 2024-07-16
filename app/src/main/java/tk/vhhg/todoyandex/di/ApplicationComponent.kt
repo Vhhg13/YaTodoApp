@@ -1,6 +1,7 @@
 package tk.vhhg.todoyandex.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.work.WorkerFactory
 import dagger.BindsInstance
 import dagger.Component
@@ -17,4 +18,7 @@ interface ApplicationComponent {
     fun getEditTaskFragmentComponent(): EditTaskFragmentComponent
 
     fun getWorkerFactory(): WorkerFactory
+
+    @LastRevisionPreferences
+    fun getPreferences(): SharedPreferences
 }

@@ -94,6 +94,9 @@ class TodoListFragment : Fragment() {
                 TodoListFragmentDirections.actionItemsListFragmentToEditTaskFragment(null)
             navController.navigate(directions)
         }
+        binding.infoButton.setOnClickListener {
+            navController.navigate(TodoListFragmentDirections.actionItemsListFragmentToInfoFragment())
+        }
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh()
         }

@@ -45,6 +45,14 @@
                 tools:text="Выполнено - " />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/info_button"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                app:icon="@drawable/info" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/visibility_button"
                 style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="wrap_content"
