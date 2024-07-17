@@ -162,7 +162,7 @@ fun EditTaskScreen(
                         Spacer(modifier = Modifier.size(12.dp))
                         Text(
                             text = stringResource(id = R.string.remove),
-                            style = LocalCustomTypography.current.body
+                            style = LocalCustomTypography.current.body // Здесь, как и во всех @Composable в пакете `tk.vhhg.todoyandex.ui.edittask.composables`, стиль текста берётся из кастомной типографии
                         )
                     }
                 }
