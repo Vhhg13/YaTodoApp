@@ -2,6 +2,7 @@ package tk.vhhg.todoyandex.ui.edittask.composables
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,7 +31,10 @@ fun DoUntil(
 ) {
     Row(
         modifier = modifier
-            .clickable{ onClick() }
+            .clickable(indication = rememberRipple(),
+                interactionSource = remember { MutableInteractionSource() }) {
+                onClick()
+            }
             .padding(vertical = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically

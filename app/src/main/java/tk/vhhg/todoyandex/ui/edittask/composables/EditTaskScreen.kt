@@ -1,7 +1,9 @@
 package tk.vhhg.todoyandex.ui.edittask.composables
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +25,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
@@ -87,6 +90,16 @@ fun EditTaskScreen(
             ) {
                 BasicTextField(
                     minLines = 3,
+                    decorationBox = {  innerTextField ->
+                        if (body.isEmpty()) {
+                            Text(
+                                stringResource(R.string.todo_item_text_hint),
+                                color = LocalCustomColors.current.labelTertiary,
+                                style = LocalCustomTypography.current.body
+                            )
+                        }
+                        innerTextField()
+                    },
                     value = body,
                     onValueChange = onBodyChange,
                     modifier = Modifier

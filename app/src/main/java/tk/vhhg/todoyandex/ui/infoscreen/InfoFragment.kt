@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.platform.LocalDensity
 import androidx.fragment.app.Fragment
@@ -56,9 +57,9 @@ class InfoFragment : Fragment() {
         )
         Log.d("divhandler", "onCreateView ${preferences.getInt(Constants.THEME_PREFERENCE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)} ${resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK}")
         val divView = Div2ViewFactory(divContext, templatesJson).createView(cardJson)
-
-
-        return divView
+        return ScrollView(requireContext()).apply {
+            addView(divView)
+        }
     }
     private fun createDivConfiguration(): DivConfiguration {
         return DivConfiguration.Builder(PicassoDivImageLoader(requireContext()))

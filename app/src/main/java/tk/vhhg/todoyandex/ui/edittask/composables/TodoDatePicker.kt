@@ -1,12 +1,14 @@
 package tk.vhhg.todoyandex.ui.edittask.composables
 
 import android.content.res.Configuration
+import android.os.SystemClock
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.TextButton
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -17,11 +19,18 @@ import androidx.compose.ui.unit.dp
 import tk.vhhg.todoyandex.R
 import tk.vhhg.todoyandex.ui.theme.AppTheme
 import tk.vhhg.todoyandex.ui.theme.LocalCustomColors
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoDatePicker(modifier: Modifier = Modifier, onConfirmButtonClick: (Long?) -> Unit, onDismiss: () -> Unit) {
-    val datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState(
+        selectableDates = object : SelectableDates{
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis >= Date().time.let{ it-it.mod(86400000) }
+            }
+        }
+    )
     DatePickerDialog(
         colors = DatePickerDefaults.colors().copy(
             containerColor = LocalCustomColors.current.backSecondary
@@ -54,7 +63,8 @@ fun TodoDatePicker(modifier: Modifier = Modifier, onConfirmButtonClick: (Long?) 
             todayDateBorderColor = LocalCustomColors.current.backSecondary,
             weekdayContentColor = LocalCustomColors.current.labelTertiary,
             headlineContentColor = LocalCustomColors.current.labelPrimary,
-            titleContentColor = LocalCustomColors.current.labelPrimary
+            titleContentColor = LocalCustomColors.current.labelPrimary,
+            disabledDayContentColor = LocalCustomColors.current.labelTertiary
         ))
     }
 }
