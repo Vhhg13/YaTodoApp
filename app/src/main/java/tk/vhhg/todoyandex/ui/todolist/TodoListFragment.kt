@@ -11,9 +11,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import androidx.work.ListenableWorker.Result.Success
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import tk.vhhg.todoyandex.App
@@ -62,6 +64,16 @@ class TodoListFragment : Fragment() {
                 navController.navigate(directions)
             }
         )
+        savedStateHandle(navController)?.getStateFlow<TodoItem?>("wasDeleted", null)?.let { deletedItemsFlow ->
+            observeWithLifecycle(deletedItemsFlow) { deletedItem ->
+                if (deletedItem != null) createCountDownSnackbar(deletedItem) {
+                    savedStateHandle(navController)?.set<TodoItem?>(
+                        "wasDeleted",
+                        null
+                    )
+                }
+            }
+        }
         binding.recycler.adapter = adapter
         observeWithLifecycle(viewModel.uiState) { uiState ->
             binding.swipeRefreshLayout.isRefreshing = uiState.isLoading
@@ -99,6 +111,32 @@ class TodoListFragment : Fragment() {
         }
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh()
+        }
+    }
+
+    private fun savedStateHandle(navController: NavController) =
+        navController.currentBackStackEntry?.savedStateHandle
+
+    private fun createCountDownSnackbar(deletedItem: TodoItem, onDismissSnackbarCallback: () -> Unit) {
+        lifecycleScope.launch {
+            val snackbar = Snackbar.make(binding.root, "", Snackbar.LENGTH_INDEFINITE)
+            snackbar.animationMode = Snackbar.ANIMATION_MODE_SLIDE
+            snackbar.setTextMaxLines(1)
+            snackbar.setAction(R.string.restore_deleted){
+                viewModel.restore(deletedItem)
+                snackbar.dismiss()
+                onDismissSnackbarCallback()
+                cancel()
+            }
+            snackbar.show()
+            for(countdown in 5 downTo 1){
+                snackbar.setText(resources.getString(R.string.deletion_countdown, deletedItem.body, countdown))
+                snackbar.setBackgroundTint((0xFFCC0000 - 0x220000*countdown).toInt())
+                delay(1000)
+            }
+            snackbar.setText(resources.getString(R.string.deletion_countdown, deletedItem.body, 0))
+            snackbar.dismiss()
+            onDismissSnackbarCallback()
         }
     }
 

@@ -60,6 +60,8 @@ class TodoListViewModel(
         repo.sync()
     }
 
+    fun restore(item: TodoItem) = repo.add(item)
+
     private fun <T> collectWithViewModelScope(flow: Flow<T>, block: (T) -> Unit) {
         viewModelScope.launch {
             flow.collect(block)
