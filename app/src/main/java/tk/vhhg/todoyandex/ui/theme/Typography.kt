@@ -1,9 +1,19 @@
 package tk.vhhg.todoyandex.ui.theme
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 data class CustomTypography(
@@ -49,4 +59,18 @@ val DefaultTypography = CustomTypography(
 
 val LocalCustomTypography = staticCompositionLocalOf {
     DefaultTypography
+}
+
+@Preview
+@Composable
+fun TypographyPreview() {
+    AppTheme {
+        Column(Modifier.background(Color.White).padding(32.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
+            Text(text = "Large title - 32/38", style = LocalCustomTypography.current.largeTitle)
+            Text(text = "Title - 20/32", style = LocalCustomTypography.current.title)
+            Text(text = "BUTTON - 14/24", style = LocalCustomTypography.current.button)
+            Text(text = "Body - 16/20", style = LocalCustomTypography.current.body)
+            Text(text = "Subhead - 14/20", style = LocalCustomTypography.current.subhead)
+        }
+    }
 }

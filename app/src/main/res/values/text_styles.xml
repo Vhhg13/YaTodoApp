@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- В этом файле прописаны стили для текста TextView -->
+<!-- Эти стили используются в экране списка, который написан целиком на View -->
 <resources>
     <style name="LargeTitle">
         <item name="android:textSize">32sp</item>

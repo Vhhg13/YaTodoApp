@@ -1,6 +1,9 @@
 package tk.vhhg.todoyandex.ui.edittask.composables
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,9 +24,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -84,6 +90,16 @@ fun EditTaskScreen(
             ) {
                 BasicTextField(
                     minLines = 3,
+                    decorationBox = {  innerTextField ->
+                        if (body.isEmpty()) {
+                            Text(
+                                stringResource(R.string.todo_item_text_hint),
+                                color = LocalCustomColors.current.labelTertiary,
+                                style = LocalCustomTypography.current.body
+                            )
+                        }
+                        innerTextField()
+                    },
                     value = body,
                     onValueChange = onBodyChange,
                     modifier = Modifier
@@ -135,31 +151,33 @@ fun EditTaskScreen(
 
             HorizontalDivider(color = LocalCustomColors.current.supportSeparator)
 
-            TextButton(
-                onClick = onDeleteButtonClick,
-                enabled = deleteButtonEnabled,
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = LocalCustomColors.current.colorRed
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+            CompositionLocalProvider(LocalRippleTheme provides CustomRippleTheme(LocalCustomColors.current.colorRed)) {
+                TextButton(
+                    onClick = onDeleteButtonClick,
+                    enabled = deleteButtonEnabled,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = LocalCustomColors.current.colorRed
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 12.dp)
+                        .padding(horizontal = 8.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete current todo",
-                    )
-                    Spacer(modifier = Modifier.size(12.dp))
-                    Text(
-                        text = stringResource(id = R.string.remove),
-                        style = LocalCustomTypography.current.body
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete current todo",
+                        )
+                        Spacer(modifier = Modifier.size(12.dp))
+                        Text(
+                            text = stringResource(id = R.string.remove),
+                            style = LocalCustomTypography.current.body // Здесь, как и во всех @Composable в пакете `tk.vhhg.todoyandex.ui.edittask.composables`, стиль текста берётся из кастомной типографии
+                        )
+                    }
                 }
             }
         }

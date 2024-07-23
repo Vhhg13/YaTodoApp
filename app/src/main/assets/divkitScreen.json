@@ -1,0 +1,246 @@
+{
+  "templates": {
+    "some_button": {
+      "alignment_horizontal":"end",
+      "content_alignment_horizontal":"center",
+      "content_alignment_vertical":"center",
+      "margins": {
+        "end": 16
+      },
+      "type": "container",
+      "height": {
+        "type": "fixed",
+        "value": 50
+      },
+      "width": {
+        "type": "fixed",
+        "value": 50
+      },
+      "items": [
+        {
+          "type": "text",
+          "$text": "btn_txt"
+        }
+      ],
+      "actions": [
+        {
+          "log_id": "switch_screen",
+          "$url": "button_action"
+        }
+      ]
+    },
+    "info_screen": {
+      "type": "container",
+      "margins": {
+        "left": 16,
+        "right": 16,
+        "top": 16,
+        "bottom": 16
+      },
+      "orientation": "vertical",
+      "content_alignment_horizontal": "center",
+      "items": [
+        {
+          "type": "container",
+          "orientation": "horizontal",
+          "content_alignment_vertical": "center",
+          "items": [
+            {
+              "type": "image",
+              "height": {
+                "type": "fixed",
+                "value": 24
+              },
+              "width": {
+                "type": "fixed",
+                "value": 24
+              },
+              "image_url": "http://84.246.85.148/back_arrow.svg",
+              "$tint_color": "text_clr",
+              "tint_mode": "multiply",
+              "actions": [
+                {
+                  "log_id": "go_back",
+                  "url": "todo-action://goback"
+                }
+              ]
+            },
+            {
+              "margins": {
+                "left": 16
+              },
+              "type": "text",
+              "text": "Сделать",
+              "font_size": 16,
+              "$text_color": "text_clr"
+            }
+          ]
+        },
+        {
+          "type": "image",
+          "image_url": "http://84.246.85.148/radioButton.png"
+        },
+        {
+          "type": "text",
+          "text": "          Приложение «Сделать» позволит вам следить за всем, что нужно сделать, и не даст вам забыить про важные дела (например, сдача домашнего задания утром в субботу!).",
+          "$text_color": "text_clr",
+          "line_height": 28,
+          "font_size": 16
+        },
+        {
+          "type": "separator",
+          "margins": {
+            "top": 16,
+            "bottom": 16
+          },
+          "background": [
+            {
+              "type": "solid",
+              "$color": "text_clr"
+            }
+          ],
+          "alpha": 0.2
+        },
+        {
+          "type": "text",
+          "text": "Тема приложения:",
+          "font_size": 16,
+          "$text_color": "text_clr"
+        },
+        {
+          "type": "select",
+          "width": {
+            "type": "match_parent"
+          },
+          "height": {
+            "type": "wrap_content"
+          },
+          "margins": {
+            "top": 16,
+            "right":2,
+            "bottom":2
+          },
+          "paddings": {
+            "left": 16,
+            "top": 10,
+            "right": 16,
+            "bottom": 10
+          },
+          "alpha": 1,
+          "alignment_horizontal": "center",
+          "alignment_vertical": "center",
+          "background": [
+            {
+              "type": "solid",
+              "$color": "underlay_clr"
+            }
+          ],
+          "border": {
+            "corner_radius": 8,
+            "shadow": {
+              "offset": {
+                "x": {
+                  "value": 2
+                },
+                "y": {
+                  "value": 2
+                }
+              },
+              "color": "#000"
+            },
+            "has_shadow": true
+          },
+          "font_size": 16,
+          "font_weight": "medium",
+          "$text_color": "text_clr",
+          "value_variable": "chosen_theme",
+          "options": [
+            {
+              "value": "system",
+              "text": "Как в системе"
+            },
+            {
+              "value": "light",
+              "text": "Светлая"
+            },
+            {
+              "value": "dark",
+              "text": "Тёмная"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "card": {
+    "log_id": "screen",
+    "variables": [
+      {
+        "type": "string",
+        "name": "chosen_theme",
+        "value": "system"
+      },
+      {
+        "type": "string",
+        "name": "system_theme",
+        "value": "light"
+      }
+    ],
+    "variable_triggers": [
+      {
+        "condition": "@{chosen_theme != ''}",
+        "mode": "on_variable",
+        "actions": [
+          {
+            "log_id": "switchtheme",
+            "url": "todo-action://theme?@{chosen_theme}"
+          }
+        ]
+      }
+    ],
+    "states": [
+      {
+        "state_id": 0,
+        "div": {
+          "type": "container",
+          "items": [
+            {
+              "type": "info_screen",
+              "text_clr": "@{chosen_theme == 'system' ? '@{system_theme == 'light' ? '#000' : '#FFF'}' : '@{chosen_theme == 'light' ? '#000' : '#FFF'}'}",
+              "underlay_clr": "@{chosen_theme == 'system' ? '@{system_theme == 'light' ? '#FFFFFF' : '#252528'}' : '@{chosen_theme == 'light' ? '#FFFFFF' : '#252528'}'}"
+            },
+            {
+              "type": "some_button",
+              "button_action": "div-action://set_state?state_id=1",
+              "btn_txt": "?"
+            }
+          ]
+        }
+      },
+      {
+        "state_id": 1,
+        "div": {
+          "type": "container",
+          "orientation": "vertical",
+          "items": [
+            {
+              "type": "image",
+              "image_url": "http://84.246.85.148/on.jpg",
+              "margins": {
+                "top": 16,
+                "end": 16,
+                "start": 16,
+                "bottom": 16
+              }
+            },
+            {
+              "type": "some_button",
+              "button_action": "div-action://set_state?state_id=0",
+              "btn_txt": "!"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

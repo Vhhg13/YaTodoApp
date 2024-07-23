@@ -16,5 +16,5 @@
         <item name="support_overlay">@color/support_light_overlay</item>
         <item name="back_elevated">@color/back_light_elevated</item>
     </style>
-
+    <!-- В этом файле переопределены цвета-атрибуты (colorPrimary, colorSurface, ...) -->
 </resources>

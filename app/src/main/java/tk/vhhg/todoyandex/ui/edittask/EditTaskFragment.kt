@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import tk.vhhg.todoyandex.App
+import tk.vhhg.todoyandex.model.TodoItem
 import tk.vhhg.todoyandex.ui.edittask.composables.EditTaskScreen
 import tk.vhhg.todoyandex.ui.theme.AppTheme
 import java.util.Date
@@ -44,7 +45,7 @@ class EditTaskFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val navController = findNavController()
-
+        navController.previousBackStackEntry?.savedStateHandle?.set<TodoItem?>("wasDeleted", null)
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -66,6 +67,7 @@ class EditTaskFragment : Fragment() {
                         },
                         onDeleteButtonClick = {
                             viewModel.delete()
+                            navController.previousBackStackEntry?.savedStateHandle?.set("wasDeleted", viewModel.item)
                             navController.popBackStack()
                         })
                 }

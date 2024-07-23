@@ -50,7 +50,11 @@ dependencies {
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
-
+    // DivKit:
+    implementation(libs.div)
+    implementation(libs.div.utils)
+    implementation(libs.div.core)
+    implementation(libs.div.picasso)
 
 
     // Dagger:
