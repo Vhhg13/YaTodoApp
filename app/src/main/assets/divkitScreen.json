@@ -63,7 +63,10 @@
                   "log_id": "go_back",
                   "url": "todo-action://goback"
                 }
-              ]
+              ],
+              "accessibility": {
+                "description": "Возврат на предыдущий экран"
+              }
             },
             {
               "margins": {
@@ -78,7 +81,10 @@
         },
         {
           "type": "image",
-          "image_url": "http://84.246.85.148/radioButton.png"
+          "image_url": "http://84.246.85.148/radioButton.png",
+          "accessibility": {
+            "mode": "exclude"
+          }
         },
         {
           "type": "text",

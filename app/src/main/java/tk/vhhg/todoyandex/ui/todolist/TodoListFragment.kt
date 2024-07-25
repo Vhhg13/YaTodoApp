@@ -80,13 +80,20 @@ class TodoListFragment : Fragment() {
             adapter.submitList(uiState.filteredList)
             binding.tasksDoneToolbarTextView.text =
                 getString(R.string.tasks_done_format, uiState.tasksDone)
-            val iconResource = if (uiState.areDoneTasksVisible) {
-                R.drawable.visibility_off_24px
+            binding.tasksDoneToolbarTextView.contentDescription = resources.getQuantityString(R.plurals.tasks_done_content_description, uiState.tasksDone, uiState.tasksDone)
+            val iconResource: Int
+            val contentDescriptionResource: Int
+            if (uiState.areDoneTasksVisible) {
+                iconResource = R.drawable.visibility_off_24px
+                contentDescriptionResource = R.string.hide_done
             } else {
-                R.drawable.visibility_24px
+                iconResource = R.drawable.visibility_24px
+                contentDescriptionResource = R.string.show_done
             }
-            binding.visibilityButton.icon =
-                AppCompatResources.getDrawable(requireContext(), iconResource)
+            binding.visibilityButton.apply {
+                icon = AppCompatResources.getDrawable(requireContext(), iconResource)
+                contentDescription = getString(contentDescriptionResource)
+            }
         }
         observeWithLifecycle(viewModel.errors) { r: Result<Unit> ->
             if(r !is Result.Success)

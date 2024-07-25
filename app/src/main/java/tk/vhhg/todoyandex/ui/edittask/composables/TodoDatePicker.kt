@@ -1,9 +1,8 @@
 package tk.vhhg.todoyandex.ui.edittask.composables
 
 import android.content.res.Configuration
-import android.os.SystemClock
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.TextButton
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -23,8 +22,9 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TodoDatePicker(modifier: Modifier = Modifier, onConfirmButtonClick: (Long?) -> Unit, onDismiss: () -> Unit) {
+fun TodoDatePicker(onConfirmButtonClick: (Long?) -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier, initialSelectedDate: Long? = null) {
     val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = initialSelectedDate,
         selectableDates = object : SelectableDates{
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 return utcTimeMillis >= Date().time.let{ it-it.mod(86400000) }
@@ -75,7 +75,7 @@ fun TodoDatePicker(modifier: Modifier = Modifier, onConfirmButtonClick: (Long?) 
 fun DatePickerPreview(){
     AppTheme {
         TodoDatePicker(
-            Modifier,{}, {}
+            {}, {}, initialSelectedDate = Date().time
         )
     }
 }

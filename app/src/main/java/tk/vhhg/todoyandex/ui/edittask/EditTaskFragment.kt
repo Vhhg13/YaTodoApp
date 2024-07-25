@@ -55,7 +55,7 @@ class EditTaskFragment : Fragment() {
                         body = uiState.body,
                         priority = uiState.priority,
                         deadline = uiState.deadline?.let { Date(it) },
-                        deleteButtonEnabled = viewModel.item != null,
+                        isDeleteButtonEnabled = viewModel.item != null,
                         onBodyChange = { viewModel.changeBody(it) },
                         onPriorityChange = { viewModel.changePriority(it) },
                         onDeadlineSwitchToggle = { viewModel.toggleDeadline(it) },
