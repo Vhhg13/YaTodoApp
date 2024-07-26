@@ -15,6 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import tk.vhhg.todoyandex.R
 import tk.vhhg.todoyandex.ui.theme.LocalCustomColors
@@ -30,10 +34,14 @@ fun EditTaskTopBar(onCloseClick: () -> Unit, onSaveClick: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = onCloseClick) {
+        val closeButtonContentDescription = stringResource(R.string.back_without_saving)
+        IconButton(onClick = onCloseClick, modifier = Modifier.semantics(mergeDescendants = true) {
+            contentDescription = closeButtonContentDescription
+            role = Role.Button
+        }) {
             Icon(
                 imageVector = Icons.Default.Close,
-                contentDescription = "Close the item editing screen",
+                contentDescription = null,
                 tint = LocalCustomColors.current.labelPrimary
             )
         }

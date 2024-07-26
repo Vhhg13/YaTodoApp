@@ -2,7 +2,6 @@
 agp = "8.5.0"
 dagger = "2.51.1"
 div = "30.8.0"
-divCore = "30.8.0"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -38,7 +37,7 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 div = { module = "com.yandex.div:div", version.ref = "div" }
-div-core = { module = "com.yandex.div:div-core", version.ref = "divCore" }
+div-core = { module = "com.yandex.div:div-core", version.ref = "div" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

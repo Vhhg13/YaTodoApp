@@ -39,6 +39,7 @@
                 style="@style/Body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:accessibilityLiveRegion="assertive"
                 android:textColor="?colorOutline"
                 tools:layout_editor_absoluteX="67dp"
                 tools:layout_editor_absoluteY="123dp"
@@ -46,6 +47,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/info_button"
+                android:contentDescription="@string/about_content_description"
                 style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,6 +55,7 @@
                 app:icon="@drawable/info" />
 
             <com.google.android.material.button.MaterialButton
+                android:contentDescription=""
                 android:id="@+id/visibility_button"
                 style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="wrap_content"
@@ -108,6 +111,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin_end"
         android:layout_marginBottom="@dimen/fab_margin_bottom"
+        android:contentDescription="@string/add_todo_item_content_description"
         android:src="@drawable/baseline_add_24"
         app:layout_anchorGravity="bottom|end"
         app:shapeAppearanceOverlay="@style/FabShape" />

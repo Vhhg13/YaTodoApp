@@ -23,8 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import tk.vhhg.todoyandex.R
 import tk.vhhg.todoyandex.model.TodoItemPriority
 import tk.vhhg.todoyandex.ui.theme.LocalCustomColors
 
@@ -72,8 +76,12 @@ fun BottomSheetButton(
     isChosen: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     TextButton(
-        onClick = onClick, modifier = modifier.fillMaxWidth(), shape = RectangleShape
+        onClick = onClick, modifier = modifier.fillMaxWidth()
+            .semantics(mergeDescendants = true) {
+                contentDescription = if(isChosen) context.getString(R.string.chosen) else context.getString(R.string.not_chosen)
+            }, shape = RectangleShape
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -93,7 +101,7 @@ fun BottomSheetButton(
             if (isChosen) {
                 Icon(
                     imageVector = Icons.Default.Done,
-                    contentDescription = "Chosen priority",
+                    contentDescription = null,
                     modifier = Modifier.padding(end = 16.dp),
                     tint = LocalCustomColors.current.labelPrimary
                 )
