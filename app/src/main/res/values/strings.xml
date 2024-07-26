@@ -21,7 +21,7 @@
     <string name="dismiss">ОТМЕНА</string>
     <string name="error_happened">Произошла ошибка. Обновите список</string>
     <string name="refresh">Обновить</string>
-    <string name="deletion_countdown">Удалить \"%1$s\"? (%2$d)</string>
+    <string name="deletion_countdown">%1$sУдалить \"%2$s\"?</string>
     <string name="restore_deleted">Отмена</string>
     <string name="add_todo_item_content_description">Добавить дело</string>
     <string name="toggle_done">Изменить статус дела</string>
@@ -42,6 +42,10 @@
     <string name="medium_priority_content_description">Средний</string>
     <string name="low_priority_content_description">Низкий</string>
     <string name="priority_content_description">Приоритет: %1$s</string>
+    <string name="countdown_snackbar_content_description">Отменить удаление в течение пяти секунд</string>
+    <string name="time_left_countdown">(%1$d с.)</string>
+    <string name="deletion_announcement">Хотите отменить удаление?</string>
+    <string name="cancel">Отменить</string>
     <plurals name="tasks_done_content_description">
         <item quantity="zero">Ни одно дело не выполнено</item>
         <item quantity="one">%1$d дело выполнено</item>
