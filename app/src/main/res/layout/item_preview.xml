@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <FrameLayout
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/icon_toggle_button_padding">
+
+            <ToggleButton
+                style="@style/IconToggleButton.RedCheckbox"
+                android:layout_gravity="center"
+                android:checked="true" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingTop="16dp">
+
+            <TextView
+                android:id="@+id/body"
+                style="@style/Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="3"
+                tools:text="Купить что-то" />
+
+            <TextView
+                android:id="@+id/subhead"
+                style="@style/Subhead.Recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                tools:text="дата" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/info"
+            style="@style/RecyclerInfoButton"
+            android:layout_gravity="center_vertical" />
+
+
+    </LinearLayout>
+
+    <tk.vhhg.todoyandex.ui.todolist.customitemview.TodoItemView
+        android:layout_width="match_parent"
+        android:visibility="visible"
+        android:text="Купить что-то Купить что-то Купить a a a a a  a a a a a a  a a a  что-то Купить что-то Купить что-то Купить что-то Купить что-то "
+        app:dateText="дата"
+        android:checked="true"
+        app:important="true"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+
+
+<!--android:textColor="@color/m3_dark_default_color_secondary_text"-->

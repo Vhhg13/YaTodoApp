@@ -4,4 +4,10 @@
         <attr name="support_overlay" format="reference|color"/>
         <attr name="back_elevated" format="reference|color"/>
     </declare-styleable>
+    <declare-styleable name="TodoItemView">
+        <attr name="android:text" format="reference|string"/>
+        <attr name="dateText" format="reference|string"/>
+        <attr name="important" format="boolean"/>
+        <attr name="android:checked" format="boolean"/>
+    </declare-styleable>
 </resources>
