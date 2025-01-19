@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.platform.LocalDensity
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import com.yandex.div.core.DivConfiguration
 import com.yandex.div.picasso.PicassoDivImageLoader
 import tk.vhhg.todoyandex.App
 import tk.vhhg.todoyandex.di.Constants
+import tk.vhhg.todoyandex.model.ListItemType
 import javax.inject.Inject
 
 class InfoFragment : Fragment() {
@@ -49,6 +51,8 @@ class InfoFragment : Fragment() {
             Configuration.UI_MODE_NIGHT_YES -> cardJson.getJSONArray("variables").getJSONObject(1).put("value", "dark")
         }
 
+        val itemTypePreferenceString = preferences.getString(Constants.ITEM_TYPE_PREFERENCE, ListItemType.NONCUSTOM.name)
+        cardJson.getJSONArray("variables").getJSONObject(2).put("value", itemTypePreferenceString)
 
         val divContext = Div2Context(
             baseContext = requireActivity(),

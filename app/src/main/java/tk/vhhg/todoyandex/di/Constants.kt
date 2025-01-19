@@ -8,4 +8,5 @@ object Constants {
     const val SP_KEY_DEVICE_ID = "deviceId"
     const val NETWORK_FAIL_PROBABILITY = "20"
     const val REFRESH_LIST_UNIQUE_WORK_NAME = "refresh todo list"
+    const val ITEM_TYPE_PREFERENCE = "item type"
 }

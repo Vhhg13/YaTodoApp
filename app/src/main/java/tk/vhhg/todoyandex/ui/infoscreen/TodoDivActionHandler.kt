@@ -22,19 +22,27 @@ class TodoDivActionHandler(
     ): Boolean {
         val url = action.url?.evaluate(resolver) ?: return super.handleAction(action, view, resolver)
 
-        return (url.scheme == SCHEME_SAMPLE && handleSampleAction(url, view.view.context)) ||
+        return (url.scheme == SCHEME_SAMPLE && handleAction(url, view.view.context)) ||
             super.handleAction(action, view, resolver)
     }
 
-    private fun handleSampleAction(action: Uri, context: Context): Boolean {
+    private fun handleAction(action: Uri, context: Context): Boolean {
         return when (action.host) {
             "goback" -> {
                 goBack()
                 true
             }
             "theme" -> changeAppTheme(action.query, context)
+            "itemtype" -> changeItemType(action.query, context)
             else -> false
         }
+    }
+
+    private fun changeItemType(query: String?, context: Context) : Boolean {
+        (context.applicationContext as App).appComponent.getPreferences().edit {
+            putString(Constants.ITEM_TYPE_PREFERENCE, query)
+        }
+        return true
     }
 
     private fun changeAppTheme(query: String?, context: Context): Boolean{

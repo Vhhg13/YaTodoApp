@@ -168,6 +168,73 @@
               "text": "Тёмная"
             }
           ]
+        },
+        {
+          "type": "text",
+          "margins": {
+            "top": 16
+          },
+          "text": "Элемент списка:",
+          "font_size": 16,
+          "$text_color": "text_clr"
+        },
+        {
+          "type": "select",
+          "width": {
+            "type": "match_parent"
+          },
+          "height": {
+            "type": "wrap_content"
+          },
+          "margins": {
+            "top": 16,
+            "right":2,
+            "bottom":2
+          },
+          "paddings": {
+            "left": 16,
+            "top": 10,
+            "right": 16,
+            "bottom": 10
+          },
+          "alpha": 1,
+          "alignment_horizontal": "center",
+          "alignment_vertical": "center",
+          "background": [
+            {
+              "type": "solid",
+              "$color": "underlay_clr"
+            }
+          ],
+          "border": {
+            "corner_radius": 8,
+            "shadow": {
+              "offset": {
+                "x": {
+                  "value": 2
+                },
+                "y": {
+                  "value": 2
+                }
+              },
+              "color": "#000"
+            },
+            "has_shadow": true
+          },
+          "font_size": 16,
+          "font_weight": "medium",
+          "$text_color": "text_clr",
+          "value_variable": "type_of_item",
+          "options": [
+            {
+              "value": "CUSTOM",
+              "text": "Кастомная View"
+            },
+            {
+              "value": "NONCUSTOM",
+              "text": "Не кастомная View"
+            }
+          ]
         }
       ]
     }
@@ -184,6 +251,11 @@
         "type": "string",
         "name": "system_theme",
         "value": "light"
+      },
+      {
+        "type": "string",
+        "name": "type_of_item",
+        "value": "CUSTOM"
       }
     ],
     "variable_triggers": [
@@ -194,6 +266,16 @@
           {
             "log_id": "switchtheme",
             "url": "todo-action://theme?@{chosen_theme}"
+          }
+        ]
+      },
+      {
+        "condition": "@{type_of_item != ''}",
+        "mode": "on_variable",
+        "actions": [
+          {
+            "log_id": "switchitemtype",
+            "url": "todo-action://itemtype?@{type_of_item}"
           }
         ]
       }

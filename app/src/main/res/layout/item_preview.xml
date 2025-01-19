@@ -59,7 +59,7 @@
 
     </LinearLayout>
 
-    <tk.vhhg.todoyandex.ui.todolist.customitemview.TodoItemView
+    <tk.vhhg.todoyandex.ui.todolist.TodoItemView
         android:layout_width="match_parent"
         android:visibility="visible"
         android:text="Купить что-то Купить что-то Купить a a a a a  a a a a a a  a a a  что-то Купить что-то Купить что-то Купить что-то Купить что-то "
@@ -68,6 +68,3 @@
         app:important="true"
         android:layout_height="wrap_content" />
 </LinearLayout>
-
-
-<!--android:textColor="@color/m3_dark_default_color_secondary_text"-->

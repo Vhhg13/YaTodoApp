@@ -1,9 +1,6 @@
 package tk.vhhg.todoyandex.ui.edittask.composables
 
 import android.content.res.Configuration
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +22,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
@@ -44,7 +40,7 @@ import tk.vhhg.todoyandex.model.TodoItemPriority
 import tk.vhhg.todoyandex.ui.theme.AppTheme
 import tk.vhhg.todoyandex.ui.theme.LocalCustomColors
 import tk.vhhg.todoyandex.ui.theme.LocalCustomTypography
-import tk.vhhg.todoyandex.ui.todolist.DateFormatter
+import tk.vhhg.todoyandex.util.DateFormatter
 import java.util.Date
 
 @Composable
@@ -140,9 +136,7 @@ fun EditTaskScreen(
                 onClick = {
                     isDatePickerOpen = true
                 },
-                deadlineDate = deadline?.let { date ->
-                    DateFormatter.sdf.format(date)
-                } ?: "",
+                deadlineDate = DateFormatter.toString(deadline) ?: "",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)

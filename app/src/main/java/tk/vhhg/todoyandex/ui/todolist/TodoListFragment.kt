@@ -21,6 +21,8 @@ import kotlinx.coroutines.launch
 import tk.vhhg.todoyandex.App
 import tk.vhhg.todoyandex.R
 import tk.vhhg.todoyandex.databinding.FragmentItemsListBinding
+import tk.vhhg.todoyandex.di.Constants
+import tk.vhhg.todoyandex.model.ListItemType
 import tk.vhhg.todoyandex.model.Result
 import tk.vhhg.todoyandex.model.TodoItem
 import javax.inject.Inject
@@ -44,8 +46,7 @@ class TodoListFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentItemsListBinding.inflate(inflater, container, false)
         return binding.root
@@ -54,26 +55,24 @@ class TodoListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val navController = findNavController()
-        val adapter = TodoListAdapter(
-            onToggle = { todoItem ->
-                viewModel.toggle(todoItem)
-            },
-            onItemClick = { todoItem: TodoItem? ->
-                val directions =
-                    TodoListFragmentDirections.actionItemsListFragmentToEditTaskFragment(todoItem)
-                navController.navigate(directions)
-            }
+        val adapter = TodoListAdapter(onToggle = { todoItem ->
+            viewModel.toggle(todoItem)
+        }, onItemClick = { todoItem: TodoItem? ->
+            val directions =
+                TodoListFragmentDirections.actionItemsListFragmentToEditTaskFragment(todoItem)
+            navController.navigate(directions)
+        }, preferredItemType = getPreferredItemType()
         )
-        savedStateHandle(navController)?.getStateFlow<TodoItem?>("wasDeleted", null)?.let { deletedItemsFlow ->
-            observeWithLifecycle(deletedItemsFlow) { deletedItem ->
-                if (deletedItem != null) createCountDownSnackbar(deletedItem) {
-                    savedStateHandle(navController)?.set<TodoItem?>(
-                        "wasDeleted",
-                        null
-                    )
+        savedStateHandle(navController)?.getStateFlow<TodoItem?>("wasDeleted", null)
+            ?.let { deletedItemsFlow ->
+                observeWithLifecycle(deletedItemsFlow) { deletedItem ->
+                    if (deletedItem != null) createCountDownSnackbar(deletedItem) {
+                        savedStateHandle(navController)?.set<TodoItem?>(
+                            "wasDeleted", null
+                        )
+                    }
                 }
             }
-        }
         binding.recycler.adapter = adapter
         observeWithLifecycle(viewModel.uiState) { uiState ->
             binding.swipeRefreshLayout.isRefreshing = uiState.isLoading
@@ -89,14 +88,11 @@ class TodoListFragment : Fragment() {
                 AppCompatResources.getDrawable(requireContext(), iconResource)
         }
         observeWithLifecycle(viewModel.errors) { r: Result<Unit> ->
-            if(r !is Result.Success)
-                Snackbar.make(
-                    binding.root,
-                    R.string.error_happened,
-                    Snackbar.LENGTH_LONG
-                ).setAction(R.string.refresh) {
-                    viewModel.refresh()
-                }.show()
+            if (r !is Result.Success) Snackbar.make(
+                binding.root, R.string.error_happened, Snackbar.LENGTH_LONG
+            ).setAction(R.string.refresh) {
+                viewModel.refresh()
+            }.show()
         }
         binding.visibilityButton.setOnClickListener {
             viewModel.toggleDoneTasksVisibility()
@@ -114,30 +110,39 @@ class TodoListFragment : Fragment() {
         }
     }
 
+    private fun getPreferredItemType(): ListItemType {
+        val preferences = (requireContext().applicationContext as App).appComponent.getPreferences()
+        val itemTypeString =
+            preferences.getString(Constants.ITEM_TYPE_PREFERENCE, ListItemType.NONCUSTOM.name)
+        return ListItemType.valueOf(itemTypeString ?: ListItemType.NONCUSTOM.name)
+    }
+
     private fun savedStateHandle(navController: NavController) =
         navController.currentBackStackEntry?.savedStateHandle
 
-    private fun createCountDownSnackbar(deletedItem: TodoItem, onDismissSnackbarCallback: () -> Unit) {
-        lifecycleScope.launch {
-            val snackbar = Snackbar.make(binding.root, "", Snackbar.LENGTH_INDEFINITE)
-            snackbar.animationMode = Snackbar.ANIMATION_MODE_SLIDE
-            snackbar.setTextMaxLines(1)
-            snackbar.setAction(R.string.restore_deleted){
-                viewModel.restore(deletedItem)
-                snackbar.dismiss()
-                onDismissSnackbarCallback()
-                cancel()
-            }
-            snackbar.show()
-            for(countdown in 5 downTo 1){
-                snackbar.setText(resources.getString(R.string.deletion_countdown, deletedItem.body, countdown))
-                snackbar.setBackgroundTint((0xFFCC0000 - 0x220000*countdown).toInt())
-                delay(1000)
-            }
-            snackbar.setText(resources.getString(R.string.deletion_countdown, deletedItem.body, 0))
+    private fun createCountDownSnackbar(
+        deletedItem: TodoItem, onDismissSnackbarCallback: () -> Unit
+    ) = lifecycleScope.launch {
+        val snackbar = Snackbar.make(binding.root, "", Snackbar.LENGTH_INDEFINITE)
+        snackbar.animationMode = Snackbar.ANIMATION_MODE_SLIDE
+        snackbar.setTextMaxLines(1)
+        snackbar.setAction(R.string.restore_deleted) {
+            viewModel.restore(deletedItem)
             snackbar.dismiss()
             onDismissSnackbarCallback()
+            cancel()
         }
+        snackbar.show()
+        for (countdown in 5 downTo 1) {
+            snackbar.setText(
+                resources.getString(R.string.deletion_countdown, deletedItem.body, countdown)
+            )
+            snackbar.setBackgroundTint((0xFFCC0000 - 0x220000 * countdown).toInt())
+            delay(1000)
+        }
+        snackbar.setText(resources.getString(R.string.deletion_countdown, deletedItem.body, 0))
+        snackbar.dismiss()
+        onDismissSnackbarCallback()
     }
 
     override fun onDestroyView() {
