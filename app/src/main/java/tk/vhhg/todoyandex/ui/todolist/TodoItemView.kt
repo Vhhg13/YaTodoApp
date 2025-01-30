@@ -1,5 +1,6 @@
 package tk.vhhg.todoyandex.ui.todolist
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
@@ -27,12 +28,13 @@ class TodoItemView @JvmOverloads constructor(
 ) : View(ctx, attrs, defStyleAttr) {
 
     companion object {
-        const val TITLE_TEXT_SIZE = 16
-        const val SUBTITLE_TEXT_SIZE = 14
-        const val UNCHECKED_CHECKBOX_STROKE_WIDTH = 2
-        const val RED_CHECKBOX_INNER_COLOR_ALPHA = 255 * 16 / 100
-        const val TEXT_MAX_LINES = 3
-        const val SOMETHING_WENT_WRONG_COLOR = Color.GREEN
+        private const val TITLE_TEXT_SIZE = 16
+        private const val SUBTITLE_TEXT_SIZE = 14
+        private const val UNCHECKED_CHECKBOX_STROKE_WIDTH = 2
+        private const val RED_CHECKBOX_INNER_COLOR_ALPHA = 255 * 16 / 100
+        private const val TEXT_MAX_LINES = 3
+        private const val SOMETHING_WENT_WRONG_COLOR = Color.GREEN
+        private const val CB_ANIMATION_RADIUS = 16
     }
 
     // <Util functions>
@@ -98,6 +100,12 @@ class TodoItemView @JvmOverloads constructor(
         isAntiAlias = true
     }
 
+    private val cbAnimationPaint = Paint().apply {
+        color = Color.GRAY
+        alpha = 80
+        style = Paint.Style.FILL
+    }
+
     // </Paints>
 
 
@@ -124,6 +132,17 @@ class TodoItemView @JvmOverloads constructor(
     private var checkedClickListener: OnClickListener? = null
     fun setCheckedClickListener(l: OnClickListener?) {
         checkedClickListener = l
+    }
+
+    private var cbAnimRadius = 0F
+
+    private val checkboxAnimator = ValueAnimator.ofFloat(0F, dp(CB_ANIMATION_RADIUS)).apply {
+        duration = 250
+        addUpdateListener { v ->
+            cbAnimRadius = v.animatedValue as Float
+            if (cbAnimRadius >= dp(16)) cbAnimRadius = 0F
+            invalidate()
+        }
     }
 
     var checked: Boolean = false
@@ -285,6 +304,7 @@ class TodoItemView @JvmOverloads constructor(
             canvas.drawRect(dp(5 + 16), dp(5 + 16), dp(5 + 16 + 14), dp(5 + 16 + 14), redBgBgPaint)
             canvas.drawRect(dp(5 + 16), dp(5 + 16), dp(5 + 16 + 14), dp(5 + 16 + 14), redBgPaint)
         }
+        canvas.drawCircle(dp(16+12), dp(16+12), cbAnimRadius, cbAnimationPaint)
 
         // InfoBitmap
         canvas.drawBitmap(
@@ -319,6 +339,8 @@ class TodoItemView @JvmOverloads constructor(
             private val pivot = dp(16 + 24 + 16)
             override fun onSingleTapUp(e: MotionEvent): Boolean {
                 if ((e.getX(0)) <= pivot) {
+                    cbAnimRadius = 0F
+                    checkboxAnimator.start()
                     checked = !checked
                     checkedClickListener?.onClick(this@TodoItemView)
                 } else {
